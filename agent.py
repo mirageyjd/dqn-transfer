@@ -8,7 +8,7 @@ import gym
 # Q function
 class QFunction(object):
     def __init__(self, env: gym.Env, config: dict):
-        self.q_network = config['q_network_creator'](env, config)
+        self.q_network = config['q_network_creator'](env).to(device=config['device'])
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=config['adam_lr'], eps=config['adam_eps'])
 
     # return q(s,a), seems useless
@@ -33,10 +33,10 @@ class QFunction(object):
     # update network
     def update(self, s_batch: torch.Tensor, a_batch: torch.Tensor, target_batch: torch.Tensor):
         q_s = self.q_network(s_batch)
-        est_batch = torch.gather(q_s, 1, torch.unsqueeze(a_batch, 1)).transpose(0, 1).squeeze()
+        est_batch = torch.gather(q_s, 1, torch.unsqueeze(a_batch, 1)).squeeze()
         loss = ((est_batch - target_batch) ** 2).mean()
 
-        self.q_network.zero_grad()
+        self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
 
@@ -70,4 +70,3 @@ class Agent(object):
     # update target q function
     def update_target(self):
         self.target_q_func.copy(self.q_func)
-

@@ -33,5 +33,5 @@ class QNetworkAtari(nn.Module):
         return q_out
 
 
-def q_network_atari_creator(env: gym.Env, config: dict):
-    return QNetworkAtari(env).to(device=config['device'])   # not sure whether it works
+def q_network_atari_creator(env: gym.Env):
+    return QNetworkAtari(env)
