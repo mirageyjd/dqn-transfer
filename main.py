@@ -7,12 +7,16 @@ from logger import Logger
 from atari_env import AtariEnv
 
 config = {
-    'device': 'cuda',
+    'device': 'cpu',
     'log_dir': './results',
 
     'experiment_name': 'pong-1',
     'env_name': 'PongNoFrameskip-v4',
     'q_network_creator': q_network_atari_creator,
+
+    # action mapping: restrict action space
+    'action_mapping_on': True,
+    'action_mapping': ['NOOP', 'RIGHT', 'LEFT'],
 
     # deepmind-style atari (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     'frame_skip': 4,                # frame skip
@@ -46,7 +50,7 @@ config = {
     'checkpoint_freq': 1000000,      # checkpoint for saving model
 }
 
-env = AtariEnv(gym.make(config['env_name']))
+env = AtariEnv(gym.make(config['env_name']), config)
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
 logger = Logger(config)

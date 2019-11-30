@@ -3,3 +3,4 @@ torchvision==0.4.2
 gym==0.15.4
 atari-py==0.2.6
 tqdm==4.39.0
+numpy==1.17.4
