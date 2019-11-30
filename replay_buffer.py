@@ -26,11 +26,11 @@ class ReplayBuffer(object):
         self.last = -1
 
         self.s = torch.empty((self.capacity,) + env.observation_space.shape,
-                             dtype=TYPE_MAP[env.observation_space.dtype])
-        self.a = torch.empty(self.capacity, dtype=TYPE_MAP[env.action_space.dtype])
+                             dtype=torch.uint8)
+        self.a = torch.empty(self.capacity, dtype=torch.int64)
         self.r = torch.empty(self.capacity, dtype=torch.float32)
         self.s2 = torch.empty((self.capacity,) + env.observation_space.shape,
-                              dtype=TYPE_MAP[env.observation_space.dtype])
+                              dtype=torch.uint8)
 
     def insert(self, trans: Tuple[np.ndarray, int, float, np.ndarray]):
         """
@@ -43,8 +43,6 @@ class ReplayBuffer(object):
         self.last = (self.last + 1) % self.capacity
         if self.n < self.capacity:
             self.n += 1
-
-        self.last = (self.last + 1) % self.capacity
         s_new, a_new, r_new, s2_new = trans
         self.s[self.last] = torch.from_numpy(s_new)
         self.a[self.last] = a_new
@@ -63,4 +61,6 @@ class ReplayBuffer(object):
         """
 
         ind = np.random.randint(0, self.n, size=batch_size)
+        # print("Action array: {}".format(self.a))
+        # print("Index: {}, Action: {}, N: {}".format(ind, self.a[ind], self.n))
         return self.s[ind], self.a[ind], self.r[ind], self.s2[ind]

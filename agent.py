@@ -65,7 +65,7 @@ class Agent(object):
               gamma: float):
         # move tensors to training device and set data type of tensors
         s_batch = s_batch.to(device=self.device, dtype=torch.float32)
-        a_batch = a_batch.to(device=self.device, dtype=torch.long)
+        a_batch = a_batch.to(device=self.device)
         r_batch = r_batch.to(device=self.device)
         s2_batch = s2_batch.to(device=self.device, dtype=torch.float32)
 
