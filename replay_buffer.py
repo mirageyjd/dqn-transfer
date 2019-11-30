@@ -4,10 +4,10 @@ import numpy as np
 import gym
 
 TYPE_MAP = {
-    np.uint8: torch.uint8,
-    np.int32: torch.int32,
-    np.int64: torch.int64,
-    np.float32: torch.float32,
+    np.dtype(np.uint8): torch.uint8,
+    np.dtype(np.int32): torch.int32,
+    np.dtype(np.int64): torch.int64,
+    np.dtype(np.float32): torch.float32,
 }
 
 
@@ -25,11 +25,15 @@ class ReplayBuffer(object):
         self.capacity = config['replay_capacity']
         self.last = -1
 
-        self.s = torch.empty((self.capacity,) + env.observation_space.shape, dtype=torch.uint8)
+        self.s = torch.empty((self.capacity,) + env.observation_space.shape,
+                             dtype=TYPE_MAP[env.observation_space.dtype])
         self.a = torch.empty(self.capacity, dtype=torch.int64)
         self.r = torch.empty(self.capacity, dtype=torch.float32)
-        self.s2 = torch.empty((self.capacity,) + env.observation_space.shape, dtype=torch.uint8)
+        self.s2 = torch.empty((self.capacity,) + env.observation_space.shape,
+                              dtype=TYPE_MAP[env.observation_space.dtype])
         self.done = torch.empty(self.capacity, dtype=torch.uint8)
+
+        print(self.s.dtype)
 
     # insert a transition tuple (s, a, r, s2, done)
     def insert(self, trans: Tuple[np.ndarray, int, float, np.ndarray, int]):
