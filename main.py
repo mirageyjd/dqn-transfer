@@ -9,6 +9,7 @@ from atari_env import AtariEnv
 config = {
     'device': 'cpu',
     'log_dir': './results/',
+    'log_stdout': True,
 
     'experiment_name': 'pong-1',
     'env_name': 'PongNoFrameskip-v4',
