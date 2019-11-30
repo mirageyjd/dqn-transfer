@@ -5,7 +5,7 @@ from replay_buffer import ReplayBuffer
 from train_agent import train_agent
 
 config = {
-    'device': 'cpu',
+    'device': 'cuda',
     'log_dir': '',
 
     'env_name': 'PongNoFrameskip-v4',
@@ -20,7 +20,7 @@ config = {
     # training hyperparameters (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     't_max': 50000000,              # maximum training steps(frames)
     'learning_start': 50000,        # number of steps before learning starts
-    'replay_capacity': 1000000,     # replay buffer size
+    'replay_capacity': 1000,        # replay buffer size
     'target_update_freq': 10000,    # target network update frequency
     'update_freq': 4,               # update frequency between successive SGD
     'gamma': 0.99,                  # discount factor

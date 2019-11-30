@@ -31,7 +31,9 @@ class ReplayBuffer(object):
             self.n += 1
 
         self.last = (self.last + 1) % self.capacity
-        self.s[self.last], self.a[self.last], self.r[self.last], self.s2[self.last] = trans
+        temp1, self.a[self.last], self.r[self.last], temp2 = trans
+        self.s[self.last] = torch.from_numpy(temp1).float().to(self.device)
+        self.s2[self.last] = torch.from_numpy(temp2).float().to(self.device)
 
     # sample a batch
     def sample(self, batch_size: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
