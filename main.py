@@ -3,6 +3,7 @@ from network import q_network_atari_creator
 from agent import Agent
 from replay_buffer import ReplayBuffer
 from train_agent import train_agent
+from atari_env import AtariEnv
 
 config = {
     'device': 'cuda',
@@ -41,7 +42,7 @@ config = {
     'eval_eps': 0.05,               # value for epsilon-greedy in evaluation
 }
 
-env = gym.make(config['env_name'])
+env = AtariEnv(gym.make(config['env_name']))
 # TODO: wrap atari game according to config
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
