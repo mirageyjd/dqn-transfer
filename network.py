@@ -1,5 +1,6 @@
 import torch.nn as nn
 import gym
+import torch
 
 
 class QNetworkAtari(nn.Module):
@@ -27,7 +28,7 @@ class QNetworkAtari(nn.Module):
         q_out = self.conv_1(state_in)
         q_out = self.conv_2(q_out)
         q_out = self.conv_3(q_out)
-        q_out = q_out.reshape(-1)
+        q_out = torch.flatten(q_out, start_dim=1)
         q_out = self.fc_1(q_out)
         q_out = self.fc_2(q_out)
         return q_out
