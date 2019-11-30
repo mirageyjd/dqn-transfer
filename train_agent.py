@@ -11,7 +11,7 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, config:
     for t in tqdm(range(1, config['t_max'] + 1)):
         # sampling from environment
         epsilon = config['eps_start'] - (config['eps_start'] - config['eps_end']) * (t - 1) / (config['eps_end_t'] - 1)
-        a = agent.action(torch.from_numpy(s[np.newaxis, :]).float().to(config['device']), epsilon)
+        a = agent.action(s, epsilon)
         s2, r, done, _ = env.step(a)
         replay_buffer.insert((s, a, r, s2))
 
