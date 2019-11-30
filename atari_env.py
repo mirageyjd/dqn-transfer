@@ -11,6 +11,15 @@ def obs_preprocess(unwrapped_obs: np.ndarray) -> np.ndarray:
     return _obs
 
 
+def clipped_reward(reward: float) -> float:
+    if reward > 0:
+        return 1.0
+    elif reward < 0:
+        return -1.0
+    else:
+        return 0.0
+
+
 # Wrapper of OpenAI gym env class targeted for Atari Game
 # Settings are from https://github.com/openai/baselines
 class AtariEnv(gym.Wrapper):
@@ -70,4 +79,4 @@ class AtariEnv(gym.Wrapper):
             if done:
                 break
 
-        return obs, total_reward, done, info
+        return obs, clipped_reward(total_reward), done, info

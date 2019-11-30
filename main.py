@@ -8,7 +8,7 @@ from atari_env import AtariEnv
 
 config = {
     'device': 'cpu',
-    'log_dir': './results',
+    'log_dir': './results/',
 
     'experiment_name': 'pong-1',
     'env_name': 'PongNoFrameskip-v4',
@@ -47,7 +47,7 @@ config = {
     'eval_t': 125000,               # number of steps(frames) in evaluation
     'eval_eps': 0.05,               # value for epsilon-greedy in evaluation
 
-    'checkpoint_freq': 1000000,      # checkpoint for saving model
+    'checkpoint_freq': 1000000,     # checkpoint for saving model
 }
 
 env = AtariEnv(gym.make(config['env_name']), config)
