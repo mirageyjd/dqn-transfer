@@ -68,16 +68,17 @@ class Agent(object):
             q_argmax = self.q_func.argmax(s_tensor)
             return q_argmax
 
-    # train the agent with a mini-batch of transition (s, a, r, s2)
+    # train the agent with a mini-batch of transition (s, a, r, s2, done)
     def train(self, s_batch: torch.Tensor, a_batch: torch.Tensor, r_batch: torch.Tensor, s2_batch: torch.Tensor,
-              gamma: float):
+              done_batch: torch.Tensor, gamma: float):
         # move tensors to training device and set data type of tensors
         s_batch = s_batch.to(device=self.device, dtype=torch.float32)
         a_batch = a_batch.to(device=self.device)
         r_batch = r_batch.to(device=self.device)
         s2_batch = s2_batch.to(device=self.device, dtype=torch.float32)
+        done_batch = done_batch.to(device=self.device, dtype=torch.float32)
 
-        target_batch = r_batch + gamma * self.target_q_func.max_batch(s2_batch)
+        target_batch = r_batch + gamma * self.target_q_func.max_batch(s2_batch) * (1 - done_batch)
         self.q_func.update(s_batch, a_batch, target_batch)
 
     # update target q function

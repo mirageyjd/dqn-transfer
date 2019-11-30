@@ -15,29 +15,30 @@ config = {
     'q_network_creator': q_network_mlp_creator,
 
     # training hyperparameters (from https://github.com/openai/baselines)
-    't_max': 100000,                # maximum training steps(frames)
-    'learning_start': 1000,         # number of steps before learning starts
-    'replay_capacity': 50000,       # replay buffer size
-    'target_update_freq': 500,      # target network update frequency
-    'update_freq': 1,               # update frequency between successive SGD
-    'gamma': 1.0,                   # discount factor
-    'batch_size': 32,               # minibatch size
+    't_max': 100000,                 # maximum training steps(frames)
+    'learning_start': 1000,          # number of steps before learning starts
+    'replay_capacity': 50000,        # replay buffer size
+    'target_update_freq': 500,       # target network update frequency
+    'update_freq': 1,                # update frequency between successive SGD
+    'gamma': 1.0,                    # discount factor
+    'batch_size': 32,                # minibatch size
 
     # linearly-annealed epsilon-greedy (from https://github.com/openai/baselines)
-    'eps_start': 1.0,               # initial epsilon value
-    'eps_end': 0.02,                # final epsilon value
-    'eps_end_t': 10000,             # the step(frame) that epsilon reaches final epsilon value
+    'eps_start': 1.0,                # initial epsilon value
+    'eps_end': 0.02,                 # final epsilon value
+    'eps_end_t': 10000,              # the step(frame) that epsilon reaches final epsilon value
 
     # Adam optimizer (from https://github.com/openai/baselines)
-    'adam_lr': 0.001,               # learning rate
-    'adam_eps': 1e-08,              # epsilon
+    'adam_lr': 0.001,                # learning rate
+    'adam_eps': 1e-08,               # epsilon
 
     # evaluation hyperparameters
-    'eval_freq': 500,               # evaluation frequency
-    'eval_t': 200,                  # number of steps(frames) in evaluation
-    'eval_eps': 0.05,               # value for epsilon-greedy in evaluation
+    'eval_freq': 500,                # evaluation frequency
+    'eval_t': 200,                   # number of steps(frames) in evaluation
+    'eval_eps': 0.0,                 # value for epsilon-greedy in evaluation
+    'eval_complete_episode': True,   # complete episode even if number of evaluation steps exceeds
 
-    'checkpoint_freq': 10000,       # checkpoint for saving model
+    'checkpoint_freq': 10000,        # checkpoint for saving model
 }
 
 env = gym.make(config['env_name'])

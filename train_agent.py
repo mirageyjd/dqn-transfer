@@ -13,13 +13,13 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger:
         epsilon = config['eps_start'] - (config['eps_start'] - config['eps_end']) * (t - 1) / (config['eps_end_t'] - 1)
         a = agent.action(s, epsilon)
         s2, r, done, _ = env.step(a)
-        replay_buffer.insert((s, a, r, s2))
+        replay_buffer.insert((s, a, r, s2, done))
 
         if t > config['learning_start']:
             if t % config['update_freq'] == 0:
                 # sample a mini-batch from replay buffer and update q function
-                s_batch, a_batch, r_batch, s2_batch = replay_buffer.sample(config['batch_size'])
-                agent.train(s_batch, a_batch, r_batch, s2_batch, config['gamma'])
+                s_batch, a_batch, r_batch, s2_batch, done_batch = replay_buffer.sample(config['batch_size'])
+                agent.train(s_batch, a_batch, r_batch, s2_batch, done_batch, config['gamma'])
 
             if t % config['target_update_freq'] == 0:
                 # update target q function
@@ -56,6 +56,13 @@ def eval_agent(env: gym.Env, agent: Agent, config: dict) -> Tuple[float, int]:
             s = s2
 
     if not done:
+        if config['eval_complete_episode']:
+            while not done:
+                a = agent.action(s, config['eval_eps'])
+                s2, r, done, _ = env.step(a)
+                total_reward += r
+                s = s2
+
         num_episode += 1
 
     return total_reward, num_episode

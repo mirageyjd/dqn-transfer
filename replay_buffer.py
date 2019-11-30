@@ -18,49 +18,32 @@ class ReplayBuffer(object):
             n: current size
             capacity: capacity
             last: index of last inserted transition
-            s, a, r, s2 : transition data
+            s, a, r, s2, done: transition data
         """
 
         self.n = 0
         self.capacity = config['replay_capacity']
         self.last = -1
 
-        self.s = torch.empty((self.capacity,) + env.observation_space.shape,
-                             dtype=torch.uint8)
+        self.s = torch.empty((self.capacity,) + env.observation_space.shape, dtype=torch.uint8)
         self.a = torch.empty(self.capacity, dtype=torch.int64)
         self.r = torch.empty(self.capacity, dtype=torch.float32)
-        self.s2 = torch.empty((self.capacity,) + env.observation_space.shape,
-                              dtype=torch.uint8)
+        self.s2 = torch.empty((self.capacity,) + env.observation_space.shape, dtype=torch.uint8)
+        self.done = torch.empty(self.capacity, dtype=torch.uint8)
 
-    def insert(self, trans: Tuple[np.ndarray, int, float, np.ndarray]):
-        """
-            insert a transition tuple
-
-            params:
-                trans: transition (s, a, r, s2)
-        """
-
+    # insert a transition tuple (s, a, r, s2, done)
+    def insert(self, trans: Tuple[np.ndarray, int, float, np.ndarray, int]):
         self.last = (self.last + 1) % self.capacity
         if self.n < self.capacity:
             self.n += 1
-        s_new, a_new, r_new, s2_new = trans
+        s_new, a_new, r_new, s2_new, done_new = trans
         self.s[self.last] = torch.from_numpy(s_new)
         self.a[self.last] = a_new
         self.r[self.last] = r_new
         self.s2[self.last] = torch.from_numpy(s2_new)
+        self.done[self.last] = done_new
 
-    def sample(self, batch_size: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-        """
-            sample a batch from replay buffer
-
-            params:
-                batch_size: the size of mini-batch
-
-            returns:
-                a tuple of transition batch (s_batch, a_batch, r_batch. s2_batch)
-        """
-
+    # sample a mini-batch
+    def sample(self, batch_size: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         ind = np.random.randint(0, self.n, size=batch_size)
-        # print("Action array: {}".format(self.a))
-        # print("Index: {}, Action: {}, N: {}".format(ind, self.a[ind], self.n))
-        return self.s[ind], self.a[ind], self.r[ind], self.s2[ind]
+        return self.s[ind], self.a[ind], self.r[ind], self.s2[ind], self.done[ind]
