@@ -40,6 +40,10 @@ class QFunction(object):
     def copy(self, q_func):
         self.q_network.load_state_dict(q_func.q_network.state_dict())
 
+    # retrieve the network model
+    def get_model(self):
+        return self.q_network
+
 
 # DQN Agent
 class Agent(object):
@@ -75,3 +79,7 @@ class Agent(object):
     # update target q function
     def update_target(self):
         self.target_q_func.copy(self.q_func)
+
+    # retrieve q model
+    def get_model(self):
+        return self.q_func.get_model()

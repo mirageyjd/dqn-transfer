@@ -1,12 +1,11 @@
 import gym
 from agent import Agent
 from replay_buffer import ReplayBuffer
-import torch
-import numpy as np
+from logger import Logger
 from tqdm import tqdm
 
 
-def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, config: dict):
+def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger: Logger, config: dict):
     s = env.reset()
     for t in tqdm(range(1, config['t_max'] + 1)):
         # sampling from environment
@@ -26,15 +25,19 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, config:
                 agent.update_target()
 
             if t % config['eval_freq'] == 0:
-                done = False
                 eval_s = env.reset()
-                # TODO: looger start
+                logger.start(t)
                 for eval_t in range(config['eval_t']):
                     eval_a = agent.action(eval_s, config['eval_eps'])
                     eval_s2, eval_r, done, _ = env.step(eval_a)
-                    # TODO: logger record eval_r
+                    logger.record(eval_r)
                     eval_s = env.reset() if done else eval_s2
-                # TODO: looger end
+                logger.end()
                 done = True
 
+            if t % config['checkpoint_freq'] == 0:
+                logger.save_model(agent.get_model())
+
         s = env.reset() if done else s2
+
+    logger.train_over()

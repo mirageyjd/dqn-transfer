@@ -3,12 +3,14 @@ from network import q_network_atari_creator
 from agent import Agent
 from replay_buffer import ReplayBuffer
 from train_agent import train_agent
+from logger import Logger
 from atari_env import AtariEnv
 
 config = {
     'device': 'cuda',
-    'log_dir': '',
+    'log_dir': './results',
 
+    'experiment_name': 'pong-1',
     'env_name': 'PongNoFrameskip-v4',
     'q_network_creator': q_network_atari_creator,
 
@@ -20,12 +22,12 @@ config = {
 
     # training hyperparameters (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     't_max': 50000000,              # maximum training steps(frames)
-    'learning_start': 500,          # number of steps before learning starts
-    'replay_capacity': 1000,        # replay buffer size
+    'learning_start': 50000,        # number of steps before learning starts
+    'replay_capacity': 1000000,     # replay buffer size
     'target_update_freq': 10000,    # target network update frequency
     'update_freq': 4,               # update frequency between successive SGD
     'gamma': 0.99,                  # discount factor
-    'batch_size': 16,               # minibatch size
+    'batch_size': 32,               # minibatch size
 
     # linearly-annealed epsilon-greedy (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     'eps_start': 1.0,  # initial epsilon value
@@ -40,11 +42,12 @@ config = {
     'eval_freq': 250000,            # evaluation frequency
     'eval_t': 125000,               # number of steps(frames) in evaluation
     'eval_eps': 0.05,               # value for epsilon-greedy in evaluation
+
+    'checkpoint_freq': 1000000,      # checkpoint for saving model
 }
 
 env = AtariEnv(gym.make(config['env_name']))
-# TODO: wrap atari game according to config
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
-# TODO: implement logger
-train_agent(env, agent, replay_buffer, config)
+logger = Logger(config)
+train_agent(env, agent, replay_buffer, logger, config)
