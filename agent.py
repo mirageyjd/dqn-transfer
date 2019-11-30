@@ -1,5 +1,5 @@
-from typing import Tuple
 import torch
+import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import gym
@@ -36,9 +36,13 @@ class QFunction(object):
         loss.backward()
         self.optimizer.step()
 
-    # copy parameters from another q function
-    def copy(self, q_func):
-        self.q_network.load_state_dict(q_func.q_network.state_dict())
+    # load a network model
+    def load_model(self, q_network: nn.Module):
+        self.q_network.load_state_dict(q_network.state_dict())
+
+    # load a network model from state dict
+    def load_model_from_state_dict(self, state_dict: dict):
+        self.q_network.load_state_dict(state_dict)
 
     # retrieve the network model
     def get_model(self):
@@ -53,7 +57,7 @@ class Agent(object):
         self.env = env
         self.q_func = QFunction(env, config)
         self.target_q_func = QFunction(env, config)
-        self.target_q_func.copy(self.q_func)
+        self.target_q_func.load_model(self.q_func.get_model())
 
     # take action under epsilon-greedy policy
     def action(self, state: np.ndarray, epsilon: float) -> int:
@@ -78,7 +82,17 @@ class Agent(object):
 
     # update target q function
     def update_target(self):
-        self.target_q_func.copy(self.q_func)
+        self.target_q_func.load_model(self.q_func.get_model())
+
+    # load a q model
+    def load_model(self, q_network: nn.Module):
+        self.q_func.load_model(q_network)
+        self.target_q_func.load_model(q_network)
+
+    # load a q model from state dict
+    def load_model_from_state_dict(self, state_dict: dict):
+        self.q_func.load_model_from_state_dict(state_dict)
+        self.target_q_func.load_model_from_state_dict(state_dict)
 
     # retrieve q model
     def get_model(self):
