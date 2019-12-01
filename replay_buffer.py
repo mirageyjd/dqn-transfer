@@ -33,8 +33,6 @@ class ReplayBuffer(object):
                               dtype=TYPE_MAP[env.observation_space.dtype])
         self.done = torch.empty(self.capacity, dtype=torch.uint8)
 
-        print(self.s.dtype)
-
     # insert a transition tuple (s, a, r, s2, done)
     def insert(self, trans: Tuple[np.ndarray, int, float, np.ndarray, int]):
         self.last = (self.last + 1) % self.capacity
