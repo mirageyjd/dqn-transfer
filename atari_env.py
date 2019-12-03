@@ -96,6 +96,8 @@ class AtariTennisWrapper(gym.Wrapper):
         self.player_score = 0
         self.opponent_score = 0
 
+        return obs
+
     def step(self, action):
         obs, reward, done, info = self.env.step(action)
 
