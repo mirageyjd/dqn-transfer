@@ -80,3 +80,40 @@ class AtariEnv(gym.Wrapper):
                 break
 
         return obs, clipped_reward(total_reward), done, info
+
+
+# Special wrapper for atari tennis: terminate when the first game ends
+class AtariTennisWrapper(gym.Wrapper):
+    def __init__(self, env: gym.Env):
+        gym.Wrapper.__init__(self, env)
+
+        self.player_score = 0
+        self.opponent_score = 0
+
+    def reset(self, **kwargs):
+        obs = self.env.reset(**kwargs)
+
+        self.player_score = 0
+        self.opponent_score = 0
+
+    def step(self, action):
+        obs, reward, done, info = self.env.step(action)
+
+        if reward != 0:
+            if reward > 0:
+                self.player_score += 1
+            else:
+                self.opponent_score += 1
+
+            done = self.game_terminate()
+
+        return obs, reward, done, info
+
+    def game_terminate(self):
+        if self.player_score >= 4 and self.player_score - self.opponent_score >= 2:
+            return True
+
+        if self.opponent_score >= 4 and self.opponent_score - self.player_score >= 2:
+            return True
+
+        return False
