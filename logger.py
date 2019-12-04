@@ -12,9 +12,10 @@ class Logger(object):
 
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
-        log_file = open(self.log_dir + self.log_name, 'w+')
-        log_file.write('{}\n'.format(self.exp_name))
-        log_file.close()
+        if not config['recover']:
+            log_file = open(self.log_dir + self.log_name, 'w+')
+            log_file.write('{}\n'.format(self.exp_name))
+            log_file.close()
 
         if self.log_stdout:
             print("Experiment: ", self.exp_name)
