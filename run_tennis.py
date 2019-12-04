@@ -54,7 +54,7 @@ config = {
 
     # recover training
     'recover': False,
-    'recover_t': 4000000,
+    'recover_t': 0,
     'model_path': './results/tennis-1.model',
 }
 

@@ -50,6 +50,11 @@ config = {
     'eval_complete_episode': False,  # complete episode even if number of evaluation steps exceeds
 
     'checkpoint_freq': 1000000,      # checkpoint for saving model
+
+    # recover training
+    'recover': False,
+    'recover_t': 0,
+    'model_path': './results/pong-1.model',
 }
 
 env = AtariEnv(gym.make(config['env_name']), config)

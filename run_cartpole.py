@@ -39,6 +39,11 @@ config = {
     'eval_complete_episode': True,   # complete episode even if number of evaluation steps exceeds
 
     'checkpoint_freq': 10000,        # checkpoint for saving model
+
+    # recover training
+    'recover': False,
+    'recover_t': 0,
+    'model_path': './results/cartpole-1.model',
 }
 
 env = gym.make(config['env_name'])

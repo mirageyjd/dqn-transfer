@@ -36,8 +36,8 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger:
                 agent.update_target()
 
             if t % config['eval_freq'] == 0:
-                total_reward, num_episode = eval_agent(env, agent, config)
-                logger.record(t, total_reward / num_episode, num_episode)
+                avg_reward, num_episode = eval_agent(env, agent, config)
+                logger.record(t, avg_reward, num_episode)
                 done = True
 
             if t % config['checkpoint_freq'] == 0:
@@ -75,4 +75,4 @@ def eval_agent(env: gym.Env, agent: Agent, config: dict) -> Tuple[float, int]:
 
         num_episode += 1
 
-    return total_reward, num_episode
+    return total_reward / num_episode, num_episode
