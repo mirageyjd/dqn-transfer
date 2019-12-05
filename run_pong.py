@@ -26,7 +26,7 @@ config = {
     'no_op_max': 30,                 # maximum number of no-op at the start of each episode
 
     # training hyperparameters (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
-    't_max': 50000000,               # maximum training steps(frames)
+    't_max': 10000000,               # maximum training steps(frames)
     'learning_start': 50000,         # number of steps before learning starts
     'replay_capacity': 1000000,      # replay buffer size
     'target_update_freq': 10000,     # target network update frequency

@@ -17,8 +17,7 @@ config = {
 
     # action mapping: restrict action space
     'action_mapping_on': True,
-    'action_mapping': ['FIRE', 'UPFIRE', 'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE',
-                       'DOWNRIGHTFIRE', 'DOWNLEFTFIRE'],
+    'action_mapping': ['FIRE', 'UPFIRE', 'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE'],
 
     # deepmind-style atari (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     'frame_skip': 4,                 # frame skip
@@ -38,7 +37,7 @@ config = {
     # linearly-annealed epsilon-greedy (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     'eps_start': 1.0,                # initial epsilon value
     'eps_end': 0.1,                  # final epsilon value
-    'eps_end_t': 1000,            # the step(frame) that epsilon reaches final epsilon value
+    'eps_end_t': 1000000,            # the step(frame) that epsilon reaches final epsilon value
 
     # Adam optimizer (from https://arxiv.org/pdf/1710.02298.pdf)
     'adam_lr': 0.0000625,            # learning rate
