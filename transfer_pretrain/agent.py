@@ -13,6 +13,13 @@ class QFunction(object):
         self.q_network = config['q_network_creator'](env).to(device=self.device)
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=config['adam_lr'], eps=config['adam_eps'])
 
+    # return max(q(s,a))
+    def max(self, state: torch.Tensor) -> int:
+        with torch.no_grad():
+            q_s = self.q_network(state)
+        q_max, q_argmax = q_s.max(1)
+        return q_max.item()
+
     # return argmax(q(s,a))
     def argmax(self, state: torch.Tensor) -> int:
         with torch.no_grad():
@@ -51,50 +58,56 @@ class QFunction(object):
 
 # DQN Agent
 class Agent(object):
-    def __init__(self, env: gym.Env, config: dict):
+    def __init__(self, env_source: gym.Env, env_target: gym.Env, config: dict):
         self.device = config['device']
 
-        self.env = env
-        self.q_func = QFunction(env, config)
-        self.target_q_func = QFunction(env, config)
-        self.target_q_func.load_model(self.q_func.get_model())
+        self.env_source = env_source
+        self.env_target = env_target
+
+        self.q_func_source = QFunction(env_source, config)
+        self.q_func_target = QFunction(env_target, config)
 
     # take action under epsilon-greedy policy
     def action(self, state: np.ndarray, epsilon: float) -> int:
         if np.random.uniform() <= epsilon:
-            return np.random.randint(0, self.env.action_space.n)
+            return np.random.randint(0, self.env_source.action_space.n)
         else:
             s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float32)
-            q_argmax = self.q_func.argmax(s_tensor)
+            q_argmax = self.q_func_source.argmax(s_tensor)
             return q_argmax
 
+    # get update target y_j = r + gamma * max(q(s2, a2)) for transition tuple (s, a, r, s2)
+    def get_update_target(self, r: float, s2: np.ndarray, done: int, gamma: float):
+        s2_tensor = torch.from_numpy(s2).unsqueeze(0).to(device=self.device, dtype=torch.float32)
+        q_max = self.q_func_source.max(s2_tensor)
+        y_j = r + gamma * q_max * (1 - done)
+        return y_j
+
     # train the agent with a mini-batch of transition (s, a, r, s2, done)
-    def train(self, s_batch: torch.Tensor, a_batch: torch.Tensor, r_batch: torch.Tensor, s2_batch: torch.Tensor,
-              done_batch: torch.Tensor, gamma: float):
+    def train(self, s_batch: torch.Tensor, a_batch: torch.Tensor, target_batch: torch.Tensor):
         # move tensors to training device and set data type of tensors
         s_batch = s_batch.to(device=self.device, dtype=torch.float32)
         a_batch = a_batch.to(device=self.device)
-        r_batch = r_batch.to(device=self.device)
-        s2_batch = s2_batch.to(device=self.device, dtype=torch.float32)
-        done_batch = done_batch.to(device=self.device, dtype=torch.float32)
+        target_batch = target_batch.to(device=self.device)
 
-        target_batch = r_batch + gamma * self.target_q_func.max_batch(s2_batch) * (1 - done_batch)
-        self.q_func.update(s_batch, a_batch, target_batch)
+        self.q_func_target.update(s_batch, a_batch, target_batch)
 
-    # update target q function
-    def update_target(self):
-        self.target_q_func.load_model(self.q_func.get_model())
+    # load a q model for target environment
+    def load_model_target(self, q_network: nn.Module):
+        self.q_func_target.load_model(q_network)
 
-    # load a q model
-    def load_model(self, q_network: nn.Module):
-        self.q_func.load_model(q_network)
-        self.target_q_func.load_model(q_network)
+    # load a q model from state dict for target environment
+    def load_model_from_state_dict_target(self, state_dict: dict):
+        self.q_func_target.load_model_from_state_dict(state_dict)
 
-    # load a q model from state dict
-    def load_model_from_state_dict(self, state_dict: dict):
-        self.q_func.load_model_from_state_dict(state_dict)
-        self.target_q_func.load_model_from_state_dict(state_dict)
+    # load a q model for source environment
+    def load_model_source(self, q_network: nn.Module):
+        self.q_func_source.load_model(q_network)
 
-    # retrieve q model
-    def get_model(self):
-        return self.q_func.get_model()
+    # load a q model from state dict for source environment
+    def load_model_from_state_dict_source(self, state_dict: dict):
+        self.q_func_source.load_model_from_state_dict(state_dict)
+
+    # retrieve q model for target environment
+    def get_model_target(self):
+        return self.q_func_target.get_model()

@@ -1,78 +1,50 @@
-from typing import Tuple
+import numpy as np
 import gym
 import torch
-from agent import Agent
-from replay_buffer import ReplayBuffer
+from transfer_pretrain.agent import Agent
+from transfer_pretrain.replay_buffer import ReplayBuffer
 from logger import Logger
 from tqdm import tqdm
 
 
-def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger: Logger, config: dict):
+def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger: Logger, config: dict,
+                config_source: dict, config_target: dict):
+    agent.load_model_from_state_dict_source(torch.load(config_source['model_path']))
+    action_mapping = build_action_mapping(config, config_source, config_target)
+
     start_t = 0
     if config['recover']:
         start_t = max(start_t, config['recover_t'] - config['learning_start'])
         config['learning_start'] += start_t
-        agent.load_model_from_state_dict(torch.load(config['model_path']))
-        print('Load model from ', config['model_path'])
+        agent.load_model_from_state_dict_target(torch.load(config['model_path']))
+        print('Load target model from ', config['model_path'])
         print('Recover training from step ', config['recover_t'])
 
     s = env.reset()
     for t in tqdm(range(start_t + 1, config['t_max'] + 1)):
         # sampling from environment
-        epsilon = config['eps_start'] - (config['eps_start'] - config['eps_end']) * (t - 1) / (
-                    config['eps_end_t'] - 1) if t <= config['eps_end_t'] else config['eps_end']
-        a = agent.action(s, epsilon)
+        a = agent.action(s, config['eps'])
         s2, r, done, _ = env.step(a)
-        replay_buffer.insert((s, a, r, s2, done))
+        update_target = agent.get_update_target(r, s2, done, config['gamma'])
+        # TODO: state mapping from source to target
+        a = action_mapping[a]
+        replay_buffer.insert((s, a, update_target))
 
         if t > config['learning_start']:
             if t % config['update_freq'] == 0:
                 # sample a mini-batch from replay buffer and update q function
-                s_batch, a_batch, r_batch, s2_batch, done_batch = replay_buffer.sample(config['batch_size'])
-                agent.train(s_batch, a_batch, r_batch, s2_batch, done_batch, config['gamma'])
-
-            if t % config['target_update_freq'] == 0:
-                # update target q function
-                agent.update_target()
-
-            if t % config['eval_freq'] == 0:
-                avg_reward, num_episode = eval_agent(env, agent, config)
-                logger.record(t, avg_reward, num_episode)
-                done = True
+                s_batch, a_batch, target_batch = replay_buffer.sample(config['batch_size'])
+                agent.train(s_batch, a_batch, target_batch)
 
             if t % config['checkpoint_freq'] == 0:
-                logger.save_model(agent.get_model())
+                logger.save_model(agent.get_model_target())
 
         s = env.reset() if done else s2
 
-    logger.train_over()
 
-
-def eval_agent(env: gym.Env, agent: Agent, config: dict) -> Tuple[float, int]:
-    total_reward = 0.0
-    num_episode = 0
-
-    s = env.reset()
-    done = False
-    for t in range(config['eval_t']):
-        a = agent.action(s, config['eval_eps'])
-        s2, r, done, _ = env.step(a)
-        total_reward += r
-
-        if done:
-            s = env.reset()
-            num_episode += 1
-        else:
-            s = s2
-
-    if not done:
-        if config['eval_complete_episode']:
-            while not done:
-                a = agent.action(s, config['eval_eps'])
-                s2, r, done, _ = env.step(a)
-                total_reward += r
-                s = s2
-
-        num_episode += 1
-
-    return total_reward / num_episode, num_episode
+def build_action_mapping(config: dict, config_source: dict, config_target: dict):
+    action_mapping = np.zeros(len(config_source['action_mapping']), dtype=np.int)
+    for i, source_action_name in enumerate(config_source['action_mapping']):
+        target_action_index = config_target['action_mapping'].index(config['s2t_action_mapping'][source_action_name])
+        action_mapping[i] = target_action_index
+    return action_mapping
