@@ -37,7 +37,7 @@ class ReplayBuffer(object):
             self.n += 1
         s_new, a_new, target_new = trans
         self.s[self.last] = torch.from_numpy(s_new)
-        self.a[self.last] = a_new
+        self.a[self.last] = int(a_new)
         self.target[self.last] = target_new
 
     # sample a mini-batch
