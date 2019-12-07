@@ -41,6 +41,12 @@ class Logger(object):
     def save_model(self, model: nn.Module):
         torch.save(model.state_dict(), self.log_dir + self.exp_name + '.model')
 
+    def load_model(self, path, recover_step):
+        log_file = open(self.log_dir + self.log_name, 'a+')
+        log_file.write('Load model from {}\n'.format(path))
+        log_file.write('Recover training from step {}\n'.format(recover_step))
+        log_file.close()
+
     def train_over(self):
         log_file = open(self.log_dir + self.log_name, 'a+')
         log_file.write('{}\n{}\n{}\n'.format(self.eval_time_history, self.avg_reward_history, self.num_episode_history))
