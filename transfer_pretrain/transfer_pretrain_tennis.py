@@ -53,9 +53,9 @@ config = {
     },
 
     # Pretrained UNIT GAN model
-    'unit_gan_config': './UNIT/configs/unit_atari_folder.yaml',
+    'unit_gan_config': './transfer_pretrain/UNIT/configs/unit_atari_folder.yaml',
     'unit_gan_model': './transfer_pretrain/unit_gan_model/gen_00450000.pt',
-    'unit_gan_folder': './UNIT',
+    'unit_gan_folder': './transfer_pretrain/UNIT',
 
     # pretrain hyperparameters
     't_max': 5000000,                # maximum training steps(frames)
