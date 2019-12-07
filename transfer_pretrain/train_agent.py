@@ -1,16 +1,23 @@
 import numpy as np
 import gym
 import torch
-from transfer_pretrain.agent import Agent
-from transfer_pretrain.replay_buffer import ReplayBuffer
+from agent import Agent
+from replay_buffer import ReplayBuffer
 from logger import Logger
 from tqdm import tqdm
+from img_transfer import load_model, img_transfer
 
 
 def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger: Logger, config: dict,
                 config_source: dict, config_target: dict):
+    torch.manual_seed(10)
+    torch.cuda.manual_seed(10)
     agent.load_model_from_state_dict_source(torch.load(config_source['model_path']))
     action_mapping = build_action_mapping(config, config_source, config_target)
+    # UNIT GAN encoder & decoder
+    encoder, decoder, transformer = load_model(config['unit_gan_config'],
+                                               config['unit_gan_model'],
+                                               config['unit_gan_folder'])
 
     start_t = 0
     if config['recover']:
@@ -26,7 +33,8 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger:
         a = agent.action(s, config['eps'])
         s2, r, done, _ = env.step(a)
         update_target = agent.get_update_target(r, s2, done, config['gamma'])
-        # TODO: state mapping from source to target
+        # state mapping from source to target
+        s2 = img_transfer(encoder, decoder, transformer, s2)
         a = action_mapping[a]
         replay_buffer.insert((s, a, update_target))
 
