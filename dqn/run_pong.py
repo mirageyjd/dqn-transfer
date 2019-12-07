@@ -11,7 +11,7 @@ config = {
     'log_dir': './dqn/results/',
     'log_stdout': False,
 
-    'experiment_name': 'pong-1',
+    'experiment_name': 'pong-2',
     'env_name': 'PongNoFrameskip-v4',
     'q_network_creator': q_network_atari_creator,
 

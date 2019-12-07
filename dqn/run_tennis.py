@@ -11,7 +11,7 @@ config = {
     'log_dir': './dqn/results/',
     'log_stdout': False,
 
-    'experiment_name': 'tennis-1',
+    'experiment_name': 'tennis-2',
     'env_name': 'TennisNoFrameskip-v4',
     'q_network_creator': q_network_atari_creator,
 
@@ -37,7 +37,7 @@ config = {
     # linearly-annealed epsilon-greedy (from https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
     'eps_start': 1.0,                # initial epsilon value
     'eps_end': 0.1,                  # final epsilon value
-    'eps_end_t': 5000000,            # the step(frame) that epsilon reaches final epsilon value
+    'eps_end_t': 1000000,            # the step(frame) that epsilon reaches final epsilon value
 
     # Adam optimizer (from https://arxiv.org/pdf/1710.02298.pdf)
     'adam_lr': 0.0000625,            # learning rate
@@ -54,7 +54,7 @@ config = {
     # recover training
     'recover': False,
     'recover_t': 0,
-    'model_path': './dqn/results/tennis-1.model',
+    'model_path': './dqn/results/tennis-2.model',
 }
 
 env = AtariTennisWrapper(gym.make(config['env_name']))
