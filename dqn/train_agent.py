@@ -1,8 +1,8 @@
 from typing import Tuple
 import gym
 import torch
-from agent import Agent
-from replay_buffer import ReplayBuffer
+from dqn.agent import Agent
+from dqn.replay_buffer import ReplayBuffer
 from logger import Logger
 from tqdm import tqdm
 

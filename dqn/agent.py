@@ -64,7 +64,7 @@ class Agent(object):
         if np.random.uniform() <= epsilon:
             return np.random.randint(0, self.env.action_space.n)
         else:
-            s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float32)
+            s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float32) / 255
             q_argmax = self.q_func.argmax(s_tensor)
             return q_argmax
 
@@ -72,10 +72,10 @@ class Agent(object):
     def train(self, s_batch: torch.Tensor, a_batch: torch.Tensor, r_batch: torch.Tensor, s2_batch: torch.Tensor,
               done_batch: torch.Tensor, gamma: float):
         # move tensors to training device and set data type of tensors
-        s_batch = s_batch.to(device=self.device, dtype=torch.float32)
+        s_batch = s_batch.to(device=self.device, dtype=torch.float32) / 255
         a_batch = a_batch.to(device=self.device)
         r_batch = r_batch.to(device=self.device)
-        s2_batch = s2_batch.to(device=self.device, dtype=torch.float32)
+        s2_batch = s2_batch.to(device=self.device, dtype=torch.float32) / 255
         done_batch = done_batch.to(device=self.device, dtype=torch.float32)
 
         target_batch = r_batch + gamma * self.target_q_func.max_batch(s2_batch) * (1 - done_batch)
