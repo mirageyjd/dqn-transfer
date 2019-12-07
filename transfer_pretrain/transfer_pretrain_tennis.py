@@ -1,8 +1,8 @@
 import gym
-from agent import Agent
-from replay_buffer import ReplayBuffer
-from train_agent import train_agent
-from atari_env import AtariEnv, AtariTennisWrapper
+from transfer_pretrain.agent import Agent
+from transfer_pretrain.replay_buffer import ReplayBuffer
+from transfer_pretrain.train_agent import train_agent
+from transfer_pretrain.atari_env import AtariEnv, AtariTennisWrapper
 from logger import Logger
 from network import q_network_atari_creator
 
@@ -18,7 +18,9 @@ config_source = {
     'action_repeat': 4,  # number of actions repeated after the agent takes each action
     'history_len': 4,  # agent history length
     'no_op_max': 30,  # maximum number of no-op at the start of each episode
-    'model_path': './source_model/pong-1.model'
+
+    # pretrain model
+    'model_path': './transfer_pretrain/source_model/pong-1.model'
 }
 
 config_target = {
@@ -33,9 +35,6 @@ config_target = {
     'action_repeat': 4,  # number of actions repeated after the agent takes each action
     'history_len': 4,  # agent history length
     'no_op_max': 30,  # maximum number of no-op at the start of each episode
-
-    # pretrain model
-    'model_path': './transfer_pretrain/source_model/pong-1.model'
 }
 
 config = {
@@ -55,7 +54,7 @@ config = {
 
     # Pretrained UNIT GAN model
     'unit_gan_config': './UNIT/configs/unit_atari_folder.yaml',
-    'unit_gan_model': './unit_gan_model/gen_00450000.pt',
+    'unit_gan_model': './transfer_pretrain/unit_gan_model/gen_00450000.pt',
     'unit_gan_folder': './UNIT',
 
     # pretrain hyperparameters

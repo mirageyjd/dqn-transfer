@@ -1,20 +1,15 @@
 from __future__ import print_function
-import sys
-import os
-import argparse
 from torch.autograd import Variable
 import sys
 import torch
-import os
 from torchvision import transforms
-import torchvision.utils as vutils
 from PIL import Image
 import numpy as np
 
 
-pong_mean_img = Image.open('./pong_mean.png')
+pong_mean_img = Image.open('./transfer_pretrain/pong_mean.png')
 pong_mean_img.load()
-pong_mean_img = np.asarray(pong_mean_img, dtype="float" )
+pong_mean_img = np.asarray(pong_mean_img, dtype="float")
 
 
 def pong_img_preprocess(img):

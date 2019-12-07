@@ -72,13 +72,13 @@ class Agent(object):
         if np.random.uniform() <= epsilon:
             return np.random.randint(0, self.env_source.action_space.n)
         else:
-            s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float32)
+            s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float32) / 255
             q_argmax = self.q_func_source.argmax(s_tensor)
             return q_argmax
 
     # get update target y_j = r + gamma * max(q(s2, a2)) for transition tuple (s, a, r, s2)
     def get_update_target(self, r: float, s2: np.ndarray, done: int, gamma: float):
-        s2_tensor = torch.from_numpy(s2).unsqueeze(0).to(device=self.device, dtype=torch.float32)
+        s2_tensor = torch.from_numpy(s2).unsqueeze(0).to(device=self.device, dtype=torch.float32) / 255
         q_max = self.q_func_source.max(s2_tensor)
         y_j = r + gamma * q_max * (1 - done)
         return y_j
@@ -86,7 +86,7 @@ class Agent(object):
     # train the agent with a mini-batch of transition (s, a, r, s2, done)
     def train(self, s_batch: torch.Tensor, a_batch: torch.Tensor, target_batch: torch.Tensor):
         # move tensors to training device and set data type of tensors
-        s_batch = s_batch.to(device=self.device, dtype=torch.float32)
+        s_batch = s_batch.to(device=self.device, dtype=torch.float32) / 255
         a_batch = a_batch.to(device=self.device)
         target_batch = target_batch.to(device=self.device)
 

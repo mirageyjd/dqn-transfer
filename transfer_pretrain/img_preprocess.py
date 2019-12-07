@@ -1,8 +1,6 @@
 import cv2
 from PIL import Image
 from os import walk
-import re
-import random
 import shutil
 import numpy as np
 

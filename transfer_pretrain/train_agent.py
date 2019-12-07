@@ -1,11 +1,11 @@
 import numpy as np
 import gym
 import torch
-from agent import Agent
-from replay_buffer import ReplayBuffer
+from transfer_pretrain.agent import Agent
+from transfer_pretrain.replay_buffer import ReplayBuffer
+from transfer_pretrain.img_transfer import load_model, img_transfer
 from logger import Logger
 from tqdm import tqdm
-from img_transfer import load_model, img_transfer
 
 
 def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger: Logger, config: dict,
