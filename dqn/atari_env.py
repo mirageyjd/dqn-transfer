@@ -1,6 +1,7 @@
 import gym
 import cv2
 import numpy as np
+from PIL import Image
 
 
 def obs_preprocess(unwrapped_obs: np.ndarray) -> np.ndarray:
@@ -27,7 +28,7 @@ class TennisPreprocEnv(gym.Wrapper):
         # Mean background pixel values
         self.tennis_mean_img = Image.open('./tennis_mean.png')
         self.tennis_mean_img.load()
-        self.tennis_mean_img = np.asarray(tennis_mean_img, dtype="float")
+        self.tennis_mean_img = np.asarray(self.tennis_mean_img, dtype="float")
     
     def reset(self, **kwargs):
         obs = self.env.reset(**kwargs)
