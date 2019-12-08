@@ -51,10 +51,14 @@ config = {
 
     'checkpoint_freq': 1000000,      # checkpoint for saving model
 
+    # start with pretrain model
+    'pretrain': False,
+    'pretrain_model_path': './dqn/pretrain_model/tennis-pretrain.model',
+
     # recover training
     'recover': False,
     'recover_t': 0,
-    'model_path': './dqn/results/tennis-2.model',
+    'recover_model_path': './dqn/results/tennis-2.model',
 }
 
 env = AtariTennisWrapper(gym.make(config['env_name']))

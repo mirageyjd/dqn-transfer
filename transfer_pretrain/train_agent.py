@@ -24,8 +24,7 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger:
         start_t = max(start_t, config['recover_t'] - config['learning_start'])
         config['learning_start'] += start_t
         agent.load_model_from_state_dict_target(torch.load(config['model_path']))
-        print('Load target model from ', config['model_path'])
-        print('Recover training from step ', config['recover_t'])
+        logger.recover(config['recover_model_path'], config['recover_t'])
 
     s = env.reset()
     for t in tqdm(range(start_t + 1, config['t_max'] + 1)):

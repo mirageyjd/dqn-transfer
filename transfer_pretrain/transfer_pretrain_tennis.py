@@ -75,7 +75,7 @@ config = {
     # recover training
     'recover': False,
     'recover_t': 0,
-    'model_path': './transfer_pretrain/target_model/tennis-pretrain.model',
+    'recover_model_path': './transfer_pretrain/target_model/tennis-pretrain.model',
 }
 
 env_source = AtariEnv(gym.make(config_source['env_name']), config_source)

@@ -11,7 +11,7 @@ config = {
     'log_dir': './dqn/results/',
     'log_stdout': False,
 
-    'experiment_name': 'pong-2',
+    'experiment_name': 'pong-1',
     'env_name': 'PongNoFrameskip-v4',
     'q_network_creator': q_network_atari_creator,
 
@@ -51,10 +51,14 @@ config = {
 
     'checkpoint_freq': 1000000,      # checkpoint for saving model
 
+    # start with pretrain model
+    'pretrain': False,
+    'pretrain_model_path': './dqn/pretrain_model/pong-pretrain.model',
+
     # recover training
     'recover': False,
     'recover_t': 0,
-    'model_path': './dqn/results/pong-1.model',
+    'recover_model_path': './dqn/results/pong-1.model',
 }
 
 env = AtariEnv(gym.make(config['env_name']), config)

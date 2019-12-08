@@ -40,10 +40,14 @@ config = {
 
     'checkpoint_freq': 10000,        # checkpoint for saving model
 
+    # start with pretrain model
+    'pretrain': False,
+    'pretrain_model_path': './dqn/pretrain_model/cartpole-pretrain.model',
+
     # recover training
     'recover': False,
     'recover_t': 0,
-    'model_path': './dqn/results/cartpole-1.model',
+    'recover_model_path': './dqn/results/cartpole-1.model',
 }
 
 env = gym.make(config['env_name'])
