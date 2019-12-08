@@ -49,7 +49,7 @@ class TennisPreprocEnv(gym.Wrapper):
         img[img > 255] = 255
         img[img < 0] = 0
         # Crop the score
-        for i in range(10):
+        for i in range(15):
             img[i,:] = np.zeros((84))
         img = img.astype('uint8')
         return img
