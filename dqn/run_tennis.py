@@ -63,6 +63,10 @@ config = {
 
 env = AtariTennisWrapper(gym.make(config['env_name']))
 env = AtariEnv(env, config)
+'''
+if config['bg_remove']:
+    env = AtariBgRemove(env, config)
+'''
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
 logger = Logger(config)
