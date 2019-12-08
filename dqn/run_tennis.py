@@ -3,7 +3,7 @@ from network import q_network_atari_creator
 from dqn.agent import Agent
 from dqn.replay_buffer import ReplayBuffer
 from dqn.train_agent import train_agent
-from dqn.atari_env import AtariEnv, AtariTennisWrapper
+from dqn.atari_env import AtariEnv, AtariTennisWrapper, TennisPreprocEnv
 from logger import Logger
 
 config = {
@@ -59,6 +59,7 @@ config = {
 
 env = AtariTennisWrapper(gym.make(config['env_name']))
 env = AtariEnv(env, config)
+env = TennisPreprocEnv(env)
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
 logger = Logger(config)

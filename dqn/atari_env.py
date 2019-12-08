@@ -20,6 +20,40 @@ def clipped_reward(reward: float) -> float:
         return 0.0
 
 
+# Wrapper class for performing image pre-processing
+class TennisPreprocEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env):
+        gym.Wrapper.__init__(self, env)
+        # Mean background pixel values
+        self.tennis_mean_img = Image.open('./tennis_mean.png')
+        self.tennis_mean_img.load()
+        self.tennis_mean_img = np.asarray(tennis_mean_img, dtype="float")
+    
+    def reset(self, **kwargs):
+        obs = self.env.reset(**kwargs)
+        for i in range(4):
+            obs[i] = self.tennis_img_preprocess(obs[i])
+        return obs
+
+    def step(self, action):
+        obs, reward, done, info = self.env.step(action)
+        for i in range(4):
+            obs[i] = self.tennis_img_preprocess(obs[i])
+        return obs, reward, done, info
+
+    def tennis_img_preprocess(self, img):
+        img = img.astype(float)
+        # Rotate
+        img -= self.tennis_mean_img
+        img[img > 255] = 255
+        img[img < 0] = 0
+        # Crop the score
+        for i in range(10):
+            img[i,:] = np.zeros((84))
+        img = img.astype('uint8')
+        return img
+
+
 # Wrapper of OpenAI gym env class targeted for Atari Game
 # Settings are from https://github.com/openai/baselines
 class AtariEnv(gym.Wrapper):
