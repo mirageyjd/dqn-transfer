@@ -12,10 +12,10 @@ def train_agent(env: gym.Env, agent: Agent, replay_buffer: ReplayBuffer, logger:
     if config['recover']:
         start_t = max(start_t, config['recover_t'] - config['learning_start'])
         config['learning_start'] += start_t
-        agent.load_model_from_state_dict(torch.load(config['model_path']))
+        agent.load_model_from_state_dict(torch.load(config['recover_model_path']))
         logger.recover(config['recover_model_path'], config['recover_t'])
     elif config['pretrain']:
-        agent.load_model_from_state_dict(torch.load(config['model_path']))
+        agent.load_model_from_state_dict(torch.load(config['pretrain_model_path']))
         logger.pretrain(config['pretrain_model_path'])
 
     s = env.reset()
