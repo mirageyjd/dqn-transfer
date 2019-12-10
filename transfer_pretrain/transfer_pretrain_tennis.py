@@ -20,7 +20,7 @@ config_source = {
     'no_op_max': 30,  # maximum number of no-op at the start of each episode
 
     # pretrain model
-    'model_path': './transfer_pretrain/source_model/pong-1.model'
+    'model_path': './transfer_pretrain/source_model/pong.model'
 }
 
 config_target = {

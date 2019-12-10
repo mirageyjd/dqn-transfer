@@ -26,7 +26,7 @@ class TennisPreprocEnv(gym.Wrapper):
     def __init__(self, env: gym.Env):
         gym.Wrapper.__init__(self, env)
         # Mean background pixel values
-        self.tennis_mean_img = Image.open('./tennis_mean.png')
+        self.tennis_mean_img = Image.open('./dqn/tennis_mean.png')
         self.tennis_mean_img.load()
         self.tennis_mean_img = np.asarray(self.tennis_mean_img, dtype="float")
     

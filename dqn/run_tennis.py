@@ -51,7 +51,7 @@ config = {
 
     'checkpoint_freq': 1000000,      # checkpoint for saving model
 
-    # start with pretrain model
+    # start with pretrain model (transfer learning)
     'pretrain': True,
     'pretrain_model_path': './dqn/pretrain_model/tennis-pretrain.model',
 
@@ -63,7 +63,8 @@ config = {
 
 env = AtariTennisWrapper(gym.make(config['env_name']))
 env = AtariEnv(env, config)
-env = TennisPreprocEnv(env)
+if config['pretrain']:
+    env = TennisPreprocEnv(env)
 agent = Agent(env, config)
 replay_buffer = ReplayBuffer(env, config)
 logger = Logger(config)
