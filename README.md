@@ -45,8 +45,9 @@ Special Notice
 
 References
 ----
-[1] [Human-level control through deep reinforcement learning](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
-[2] [DQN 3.0](https://github.com/deepmind/dqn)
-[3] [UNIT: UNsupervised Image-to-image Translation Networks](https://github.com/mingyuliutw/UNIT)
-[4] [Baselines](https://github.com/openai/baselines)
-[5] [Rainbow: Combining Improvements in Deep Reinforcement Learning](https://arxiv.org/abs/1710.02298)
+
+[1] [Human-level control through deep reinforcement learning](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf) <br>
+[2] [DQN 3.0](https://github.com/deepmind/dqn) <br>
+[3] [UNIT: UNsupervised Image-to-image Translation Networks](https://github.com/mingyuliutw/UNIT) <br>
+[4] [Baselines](https://github.com/openai/baselines) <br>
+[5] [Rainbow: Combining Improvements in Deep Reinforcement Learning](https://arxiv.org/abs/1710.02298) <br>
